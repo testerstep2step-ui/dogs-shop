@@ -1,0 +1,814 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DogWorld — Щенки и Товары</title>
+<style>
+    /* --- НАСТРОЙКИ СТИЛЕЙ (CSS) --- */
+    :root {
+        --primary-color: #ff9f43;
+        /* Оранжевый */
+        --primary-dark: #e67e22;
+        --secondary-color: #2c3e50;
+        /* Темно-синий */
+        --accent-color: #ee5253;
+        /* Красный для избранного */
+        --cart-color: #27ae60;
+        /* Зеленый для корзины */
+        --bg-color: #f7f9fc;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        --radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        /* Плавная прокрутка при клике на меню */
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    /* Шапка сайта */
+    header {
+        background-color: var(--white);
+        padding: 1rem 5%;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .logo span {
+        color: var(--primary-color);
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+        gap: 25px;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: var(--secondary-color);
+        font-weight: 600;
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+
+    nav a:hover {
+        color: var(--primary-color);
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    /* Иконки в шапке (Корзина и Избранное) */
+    .icon-btn {
+        position: relative;
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: var(--transition);
+        background: none;
+        border: none;
+    }
+
+    .icon-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .badge {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-size: 0.7rem;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+
+    .badge.cart {
+        background-color: var(--cart-color);
+    }
+
+    .badge.fav {
+        background-color: var(--accent-color);
+    }
+
+    /* Главный экран (Hero) */
+    .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://avatars.mds.yandex.net/i?id=a6402458719771290608f76bb611871d_l-8497233-images-thumbs&n=13');
+        background-size: cover;
+        background-position: center;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: var(--white);
+        padding: 0 20px;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        max-width: 600px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border-radius: 30px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        font-size: 1rem;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    /* Общие стили секций */
+    section {
+        padding: 4rem 5%;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background-color: var(--primary-color);
+        margin: 10px auto 0;
+        border-radius: 2px;
+    }
+
+    /* Рекомендации */
+    .recommendations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .rec-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: var(--transition);
+        border: 1px solid #eee;
+    }
+
+    .rec-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-color);
+    }
+
+    .rec-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Сетка товаров и щенков */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid transparent;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-color: #f0f0f0;
+    }
+
+    .card-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .card:hover .card-img {
+        transform: scale(1.05);
+    }
+
+    .card-img-wrapper {
+        overflow: hidden;
+    }
+
+    .card-info {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--secondary-color);
+        font-weight: 700;
+    }
+
+    .card-meta {
+        font-size: 0.9rem;
+        color: #777;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .card-desc {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        gap: 10px;
+    }
+
+    .price {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+    }
+
+    /* Кнопки действий внутри карточки */
+    .btn-buy {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+        flex-grow: 1;
+    }
+
+    .btn-buy:hover {
+        background-color: #34495e;
+    }
+
+    /* Кнопка Сохранить (Сердечко) */
+    .btn-save {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.2rem;
+        color: #ccc;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-save:hover {
+        transform: scale(1.1);
+        color: var(--accent-color);
+    }
+
+    .btn-save.active {
+        color: var(--accent-color);
+        background: white;
+    }
+
+    /* Уведомление (Toast) */
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(150%);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    /* Футер */
+    footer {
+        background-color: var(--secondary-color);
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: none;
+        }
+
+        .header-actions {
+            margin-left: auto;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+    
+        <body>
+
+            <!-- Шапка -->
+            <header>
+                <a href="#" class="logo">
+                    🐶 <span>DogWorld</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#hero">Главная</a></li>
+                        <li><a href="#recommendations">Советы</a></li>
+                        <li><a href="#dogs">Щенки</a></li>
+                        <li><a href="#shop">Магазин</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <!-- Кнопка Избранное -->
+                    <form action="like.html">
+                        <button class="icon-btn" title="Избранное" onclick="">
+                            ❤️
+                            <span class="badge fav" id="fav-count">0</span>
+                        </button>
+                    </form>
+
+                    <!-- Кнопка Корзина -->
+                    <form action="korzina.html">
+                        <button class="icon-btn" title="Корзина" onclick="">
+                            🛒
+                            <span class="badge cart" id="cart-count">0</span>
+                        </button>
+                    </form>
+
+                </div>
+            </header>
+
+            <main>
+                <!-- Главный экран -->
+                <section class="hero" id="hero">
+                    <h1>Твой лучший друг ждет тебя</h1>
+                    <p>Мы предлагаем породистых щенков и лучшие товары для их содержания.</p>
+                    <a href="#dogs" class="btn btn-primary">Выбрать щенка</a>
+                </section>
+
+                <!-- Рекомендации -->
+                <section id="recommendations">
+                    <h2 class="section-title">Рекомендации по уходу</h2>
+                    <div class="recommendations-grid">
+                        <article class="rec-card">
+                            <div class="rec-icon">🍖</div>
+                            <h3>Питание</h3>
+                            <p>Выбирайте качественный корм, подходящий возрасту и породе вашего пса.</p>
+                        </article>
+                        <article class="rec-card">
+                            <div class="rec-icon">🏃</div>
+                            <h3>Активность</h3>
+                            <p>Регулярные прогулки и игры необходимы для здоровья и счастья собаки.</p>
+                        </article>
+                        <article class="rec-card">
+                            <div class="rec-icon">🧶</div>
+                            <h3>Уход за шерстью</h3>
+                            <p>Вычесывайте шерсть минимум раз в неделю, чтобы избежать колтунов.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- Продажа собак (НОВЫЙ РАЗДЕЛ) -->
+                <section id="dogs" style="background-color: #fff;">
+                    <h2 class="section-title">Щенки на продажу</h2>
+                    <div class="grid-container">
+
+                        <!-- Собака 1 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Золотистый ретривер')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://i.pinimg.com/originals/94/d2/c3/94d2c35f48111dc356f024daa093a876.jpg?nii=t"
+                                    alt="Ретривер" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Золотистый ретривер</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 1 год.</span>
+                                    <span>Порода: Ретривер</span>
+                                </div>
+                                <p class="card-desc">Дружелюбный, умный и послушный пес. Идеален для семьи.</p>
+                                <div class="card-footer">
+                                    <span class="price">25 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Золотистый ретривер')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Собака 2 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Корги')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://avatars.mds.yandex.net/i?id=cd673d30a3e8f3d381b53cfd6e763299_l-4905400-images-thumbs&n=13"
+                                    alt="Корги" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Вельш-корги</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 3 мес.</span>
+                                    <span>Порода: Корги</span>
+                                </div>
+                                <p class="card-desc">Милый коротконогий пес с большим характером. Очень активный.</p>
+                                <div class="card-footer">
+                                    <span class="price">30 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Вельш-корги')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Собака 3 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Хаски')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://50.img.avito.st/image/1/1.dFkCyLa12LAYb3a2ZvV7NzVo2rC8Y3a2GG_asg.GKZBO4nker6PaNo5wFgcvWQXZVPXgmCkuFJEXAGsqEQ"
+                                    alt="Хаски" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Сибирский хаски</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 7 мес.</span>
+                                    <span>Порода: Хаски</span>
+                                </div>
+                                <p class="card-desc">Прекрасный компаньон для активных людей. Любит долгие пробежки.</p>
+                                <div class="card-footer">
+                                    <span class="price">20 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Сибирский хаски')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Собака 4 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'овчарка')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://60.img.avito.st/image/1/1.qftKvLa1BRJQG6sUFIrBvQcdBxL0F6sUUBsHEA.8JDg5SNyeWuPJZDqdbpQjxoJ1PWaaSX8Ib92bsPwhJw"
+                                    alt="овчарка" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Немецкая овчарка</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 2.5 мес.</span>
+                                    <span>Порода: Немецкая овчарка</span>
+                                </div>
+                                <p class="card-desc">Игривый и послушный щенок.</p>
+                                <div class="card-footer">
+                                    <span class="price">35 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('немецкая овчарка')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Собака 5 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'бордер колли')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://i.pinimg.com/originals/8c/03/7b/8c037b652d34037a8956ed263801f5cb.jpg"
+                                    alt="бордер колли" class=" card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Бордер колли</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 1 год.</span>
+                                    <span>Порода: Бордер колли</span>
+                                </div>
+                                <p class="card-desc">Игривый и пушистый щенок.</p>
+                                <div class="card-footer">
+                                    <span class="price">45 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Бордер колли')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+                        <!-- Собака 6 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Австралийская овчарка')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://fs.pet-yes.com/pfss/pet/photo/2025-04-07/01960db7-b510-70b5-b8f1-d114ea62977d.jpeg"
+                                    alt="Австралийская овчарка" class=" card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Австралийская овчарка</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 6 мес.</span>
+                                    <span>Порода: Австралийская овчарка</span>
+                                </div>
+                                <p class="card-desc">Послушный и веселый щенок.</p>
+                                <div class="card-footer">
+                                    <span class="price">26 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Австралийская овчарка')">Купить</button>
+                                </div>
+                            </div>
+                        </article>
+                        <!-- Собака 7 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Бельгийская овчарка')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://70.img.avito.st/image/1/1.WVkHIba19bAdhlu2OXgVKw2A97C5ilu2HYb3sg.pueTiAg-d57oMleAQv2UmVk6yGkAZV-6NbYs32ju_1U"
+                                    alt="Малинуа" class=" card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">бельгийская овчарка малинуа</h3>
+                                <div class="card-meta">
+                                    <span>Возраст: 8 мес.</span>
+                                    <span>Порода: малинуа</span>
+                                </div>
+                                <p class="card-desc">Игривый щенок.</p>
+                                <div class="card-footer">
+                                    <span class="price">40 000 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Австралийская овчарка')">Купить</button>
+                                </div>
+                            </div>
+                </section>
+
+                <!-- Магазин товаров -->
+                <section id="shop">
+                    <h2 class="section-title">Аксессуары и Еда</h2>
+                    <div class="grid-container">
+
+                        <!-- Товар 1 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Ошейник')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://kotofoto.ru/product_img/3126/432607/432607_osheynik_dlya_sobak_0558ch_1sl_36_mm_kozhabrezent_dlina_do_60_sm_cherniym.jpg?v=1615915760"
+                                    alt="Ошейник" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title"> Ошейник</h3>
+                                <div class="card-meta">
+                                    <span>Размер: L</span>
+                                    <span>Цвет: Черный</span>
+                                </div>
+                                <p class="card-desc">Прочная нейлоновая стропа с комфортной ручкой.</p>
+                                <div class="card-footer">
+                                    <span class="price">1 500 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Набор: Ошейник и поводок')">В
+                                        корзину</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Товар 2 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Корм')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://myzoodom.ru/image/cache/catalog/image/cache/catalog/incoming/wa-data/public/shop/products/26/68/96826/images/193173/193173.970-1000x1000.webp"
+                                    alt="Корм" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Сухой корм "Award"</h3>
+                                <div class="card-meta">
+                                    <span>Вес: 15 кг</span>
+                                    <span>Для взрослых</span>
+                                </div>
+                                <p class="card-desc">Сбалансированный состав с курицей и овощами.</p>
+                                <div class="card-footer">
+                                    <span class="price">4 200 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Сухой корм:'Award')">В корзину</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Товар 3 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Игрушка')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://main-cdn.sbermegamarket.ru/big1/hlr-system/-20/838/249/352/261/011/100048021304b0.jpg"
+                                    alt="Игрушка" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Пуллер</h3>
+                                <div class="card-meta">
+                                    <span>Размер: M</span>
+                                    <span>Материал: Резина</span>
+                                </div>
+                                <p class="card-desc">Прочный пуллер для собак.</p>
+                                <div class="card-footer">
+                                    <span class="price">600 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Пуллер')">В корзину</button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Товар 4 -->
+                        <article class="card">
+                            <button class="btn-save" onclick="toggleSave(this, 'Намордник')">♥</button>
+                            <div class="card-img-wrapper">
+                                <img src="https://www.fordogtrainers.com/images/dog-muzzles/Rubber-covered-wire-muzzle-for-winter-big.jpg"
+                                    alt="Намордник" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Намордник</h3>
+                                <div class="card-meta">
+                                    <span>Размер: для крупной собаки</span>
+                                    <span>Цвет: черный</span>
+                                </div>
+                                <p class="card-desc">Удобный и отличный намордник.</p>
+                                <div class="card-footer">
+                                    <span class="price">1 500 ₽</span>
+                                    <button class="btn-buy" onclick="addToCart('Намордник для собаки')">В
+                                        корзину</button>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <p>&copy; 2026 DogWorld. Питомник и зоомагазин.</p>
+                <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Демонстрационный сайт</p>
+            </footer>
+
+            <!-- Всплывающее уведомление -->
+            <div id="toast" class="toast">
+                <span id="toast-icon">✅</span>
+                <span id="toast-message">Сообщение</span>
+            </div>
+
+            <script>
+                // Переменные счетчиков
+                let cartCount = 0;
+                let favCount = 0;
+
+                const cartCountElement = document.getElementById('cart-count');
+                const favCountElement = document.getElementById('fav-count');
+                const toastElement = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                const toastIcon = document.getElementById('toast-icon');
+
+                // Функция добавления в КОРЗИНУ
+                function addToCart(itemName) {
+                    cartCount++;
+                    updateBadge(cartCountElement, cartCount);
+                    showToast(`${itemName} добавлен в корзину!`, '🛒');
+                }
+
+                // Функция ИЗБРАННОЕ (Сохранить)
+                function toggleSave(button, itemName) {
+                    // Переключаем визуальный стиль кнопки
+                    button.classList.toggle('active');
+
+                    const isSaved = button.classList.contains('active');
+
+                    if (isSaved) {
+                        favCount++;
+                        showToast(`"${itemName}" сохранен в избранное`, '❤️');
+                    } else {
+                        favCount--;
+                        showToast(`"${itemName}" удален из избранного`, '💔');
+                    }
+
+                    updateBadge(favCountElement, favCount);
+                }
+
+                // Вспомогательная функция обновления цифры бейджа с анимацией
+                function updateBadge(element, count) {
+                    element.textContent = count;
+                    element.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        element.style.transform = 'scale(1)';
+                    }, 200);
+                }
+
+                // Сообщения при клике на иконки в шапке
+                function showCartMessage() {
+                    if (cartCount === 0) {
+                        showToast('Ваша корзина пуста', '🛒');
+                    } else {
+                        showToast(`В корзине ${cartCount} товаров`, '🛒');
+                    }
+                }
+
+                function showFavMessage() {
+                    if (favCount === 0) {
+                        showToast('Вы ничего не сохраняли', '❤️');
+                    } else {
+                        showToast(`У вас ${favCount} сохраненных товаров`, '❤️');
+                    }
+                }
+
+                // Показ уведомления
+                function showToast(message, icon) {
+                    toastMessage.textContent = message;
+                    toastIcon.textContent = icon || '✅';
+                    toastElement.classList.add('show');
+
+                    // Убираем уведомление через 3 секунды
+                    setTimeout(() => {
+                        toastElement.classList.remove('show');
+                    }, 3000);
+                }
+            </script>
+        </body>
+
+        </html>

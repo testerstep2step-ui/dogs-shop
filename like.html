@@ -1,0 +1,191 @@
+ <input type="checkbox" id="fav-dog-1">
+    <input type="checkbox" id="fav-dog-2">
+    <input type="checkbox" id="fav-dog-3">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+
+        /* --- КНОПКА НАЗАД --- */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .back-link:hover { color: rgb(139, 114, 80); }
+
+        /* --- СПИСОК ТОВАРОВ --- */
+        .cart-list { list-style: none; padding: 0; }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            transition: 0.3s;
+        }
+
+        .item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+
+        .item-details { flex-grow: 1; }
+        .item-title { margin: 0 0 5px 0; font-size: 18px; }
+        .item-price { color: #666; font-size: 16px; }
+
+        /* Кнопка Удалить (CSS-логика) */
+        .remove-btn {
+            color: red;
+            cursor: pointer;
+            border: 1px solid red;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .remove-btn:hover { background: red; color: white; }
+
+        /* Скрытие товара при удалении */
+        input[type="checkbox"]:checked ~ .cart-list .item-block {
+            display: none;
+        }
+
+        /* Сообщение "Пусто" (появляется, если все удалены) */
+        .empty-msg { display: none; text-align: center; color: #888; padding: 40px; }
+        
+        /* Если все 3 чекбокса активны (все удалены) - показываем пусто (сложный селектор для примера) */
+        /* Для простоты оставим сообщение, которое видно по умолчанию, если нет товаров, 
+           но здесь мы просто скрываем товары по одному. */
+
+        /* --- ИТОГО --- */
+        .total-section {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: #5864cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .checkout-btn:hover { background: #218838; }
+
+    </style>
+
+   <!-- Чекбокс для открытия/закрытия списка избранного -->
+    <input type="checkbox" id="fav-toggle">
+
+    <!-- 2. ШАПКА (Только иконка сердца) -->
+    <header>
+        <h1>Питомник</h1>
+        <!-- Кнопка Избранное -->
+        <label for="fav-toggle" class="icon-btn">
+            ♥ <span class="badge fav-badge">0</span>
+        </label>
+    </header>
+
+    <!-- 3. ВИТРИНА СОБАК -->
+    <div class="products-grid">
+
+        <!-- СОБАКА 1 -->
+        <div class="card">
+            <div class="card-top">
+                <!-- Сердечко (Связано с fav-dog-1) -->
+                <label for="fav-dog-1" class="heart-icon">♥</label>
+            </div>
+            <img src="https://i.pinimg.com/originals/94/d2/c3/94d2c35f48111dc356f024daa093a876.jpg?nii=t" alt="Собака">
+            <h4>Ретривер</h4>
+            <p>50 000 ₽</p>
+        </div>
+
+        <!-- СОБАКА 2 -->
+        <div class="card">
+            <div class="card-top">
+                <label for="fav-dog-2" class="heart-icon">♥</label>
+            </div>
+            <img src="https://avatars.mds.yandex.net/i?id=cd673d30a3e8f3d381b53cfd6e763299_l-4905400-images-thumbs&n=13" alt="Собака">
+            <h4>Вельш Корги</h4>
+            <p>45 000 ₽</p>
+        </div>
+
+        <!-- СОБАКА 3 -->
+        <div class="card">
+            <div class="card-top">
+                <label for="fav-dog-3" class="heart-icon">♥</label>
+            </div>
+            <img src="https://50.img.avito.st/image/1/1.dFkCyLa12LAYb3a2ZvV7NzVo2rC8Y3a2GG_asg.GKZBO4nker6PaNo5wFgcvWQXZVPXgmCkuFJEXAGsqEQ" alt="Собака">
+            <h4>Сибирский Хаски</h4>
+            <p>40 000 ₽</p>
+        </div>
+
+    </div>
+
+    <!-- 4. СПИСОК ИЗБРАННОГО (Выезжает справа) -->
+    <div class="modal fav-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>♥ Избранное</h3>
+                <label for="fav-toggle" class="close-btn">✕</label>
+            </div>
+            <div class="modal-list">
+                <div class="empty-msg">Вы ничего не выбрали</div>
+
+                <!-- Товар 1 в избранном -->
+                <div class="modal-item fav-item-1">
+                    <img src="https://egida.by/wiki/dogs/722">
+                    <div class="info">Ретривер</div>
+                    <!-- Кнопка удаления из избранного -->
+                    <label for="fav-dog-1" class="btn-remove">✕</label>
+                </div>
+
+                <!-- Товар 2 в избранном -->
+                <div class="modal-item fav-item-2">
+                    <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=100">
+                    <div class="info">Корги</div>
+                    <label for="fav-dog-2" class="btn-remove">✕</label>
+                </div>
+
+                <!-- Товар 3 в избранном -->
+                <div class="modal-item fav-item-3">
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100">
+                    <div class="info">Хаски</div>
+                    <label for="fav-dog-3" class="btn-remove">✕</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
